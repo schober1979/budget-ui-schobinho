@@ -7,6 +7,10 @@ export interface SortCriteria {
 }
 
 export interface PagingCriteria extends SortCriteria {
+  sort: string;
+}
+
+export interface PagingCriteria extends SortCriteria {
   page: number;
   size: number;
 }
