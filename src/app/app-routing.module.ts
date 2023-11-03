@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { categoriesPath, defaultPath, expensesPath } from './shared/routes';
+import {AuthGuard} from "@angular/fire/auth-guard";
+import {LoginComponent} from "./shared/login/login.component";
 
 const routes: Routes = [
   {
@@ -23,15 +25,11 @@ const routes: Routes = [
   {
     path: loginPath,
     component: LoginComponent
-  }
+  },
   {
     path: '**',
     redirectTo: defaultPath,
   },
-  {
-    path: loginPath,
-    component: LoginComponent
-  }
 ];
 
 @NgModule({
