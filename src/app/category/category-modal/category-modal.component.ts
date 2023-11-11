@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
-import { filter, from } from 'rxjs';
+import {filter, finalize, from} from 'rxjs';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {CategoryService} from "../category.service";
 import {ToastService} from "../../shared/service/toast.service";
@@ -30,7 +30,17 @@ export class CategoryModalComponent {
   }
 
   save(): void {
-    this.modalCtrl.dismiss(null, 'save');
+    this.submitting = true;
+    this.categoryService
+      .upsertCategory(this.categoryForm.value)
+      .pipe(finalize(() => (this.submitting = false)))
+      .subscribe({
+        next: () => {
+          this.toastService.displaySuccessToast('Category saved');
+          this.modalCtrl.dismiss(null, 'refresh');
+        },
+        error: (error) => this.toastService.displayErrorToast('Could not save category', error),
+      });
   }
 
   delete(): void {

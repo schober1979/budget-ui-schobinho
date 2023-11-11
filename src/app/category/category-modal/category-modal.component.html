@@ -25,10 +25,15 @@
 <!-- ------- -->
 <!-- Content -->
 <!-- ------- -->
-<ion-content class="ion-padding">
+<ion-content class="ion-padding" [formGroup]="categoryForm">
   <ion-item>
     <ion-icon name="text" slot="start"></ion-icon>
-    <ion-input maxlength="40" placeholder="Enter the category's name" required></ion-input>
+    <ion-input
+      [disabled]="submitting"
+      formControlName="name"
+      maxlength="40"
+      placeholder="Enter the category's name"
+      required="true"
   </ion-item>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
