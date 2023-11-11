@@ -2,16 +2,28 @@ import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
 import { filter, from } from 'rxjs';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {CategoryService} from "../category.service";
+import {ToastService} from "../../shared/service/toast.service";
 
 @Component({
   selector: 'app-category-modal',
   templateUrl: './category-modal.component.html',
 })
 export class CategoryModalComponent {
+  readonly categoryForm: FormGroup;
+  submitting = false;
   constructor(
     private readonly actionSheetService: ActionSheetService,
     private readonly modalCtrl: ModalController,
-  ) {}
+    private readonly categoryService: CategoryService,
+    private readonly formBuilder: FormBuilder,
+    private readonly toastService: ToastService
+
+  ) {
+    this.categoryForm = this.formBuilder.group({name: ['', [Validators.required, Validators.maxLength(40)]],
+    });
+  }
 
   cancel(): void {
     this.modalCtrl.dismiss(null, 'cancel');
