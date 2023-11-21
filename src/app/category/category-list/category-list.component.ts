@@ -4,7 +4,7 @@ import {InfiniteScrollCustomEvent, ModalController, RefresherCustomEvent} from '
 import {Category, CategoryCriteria, SortOption} from '../../shared/domain';
 import {CategoryService} from "../category.service";
 import {ToastService} from "../../shared/service/toast.service";
-import {finalize, Subscription} from "rxjs";
+import {debounce, finalize, interval, Subscription} from "rxjs";
 import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
@@ -17,6 +17,11 @@ export class CategoryListComponent {
   lastPageReached = false;
   loading = false;
   searchCriteria: CategoryCriteria = { page: 0, size: 25, sort: this.initialSort };
+
+  ionViewDidLeave(): void {
+    this.searchFormSubscription.unsubscribe();
+  }
+
   ionViewDidEnter(): void {
     this.loadCategories();
   }
@@ -47,8 +52,15 @@ export class CategoryListComponent {
     private readonly modalCtrl: ModalController,
     private readonly categoryService: CategoryService,
     private readonly toastService: ToastService,
-    private readonly formBuilder: FormBuilder
-  ) {}
+    private readonly formBuilder: FormBuilder)
+{this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
+  this.searchFormSubscription = this.searchForm.valueChanges
+    .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
+    .subscribe((value) => {
+      this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
+      this.loadCategories();
+    });
+}
 
   private loadCategories(next: () => void = () => {}): void {
     if (!this.searchCriteria.name) delete this.searchCriteria.name;
