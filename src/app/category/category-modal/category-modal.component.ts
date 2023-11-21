@@ -48,11 +48,18 @@ export class CategoryModalComponent {
 
   delete(): void {
     from(this.actionSheetService.showDeletionConfirmation('Are you sure you want to delete this category?'))
-      .pipe(filter((action) => action === 'delete'))
+      .pipe(
+        filter((action) => action === 'delete'),
+        tap(() => (this.submitting = true)),
+        mergeMap(() => this.categoryService.deleteCategory(this.category.id!)),
+        finalize(() => (this.submitting = false)),
+      )
       .subscribe({
         next: () => {
-          this.modalCtrl.dismiss(null, 'delete');
+          this.toastService.displaySuccessToast('Category deleted');
+          this.modalCtrl.dismiss(null, 'refresh');
         },
+        error: (error) => this.toastService.displayErrorToast('Could not delete category', error),
       });
   }
   ionViewWillEnter(): void {
