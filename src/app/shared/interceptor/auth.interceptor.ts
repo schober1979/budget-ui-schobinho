@@ -1,3 +1,8 @@
+/*
+Der `AuthInterceptor` interceptet jeden Request und schreibt das Token (wenn vorhanden) in ein Request Header Feld namens `Authorization` mit Präfix `Bearer`.
+Der `AuthInterceptor` wird erst gebraucht, wenn HTTP Requests an das Backend gesendet werden.
+ */
+
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { mergeMap, Observable, take } from 'rxjs';

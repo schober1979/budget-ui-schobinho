@@ -16,17 +16,9 @@ export class AuthService {
 
   currentUser = (): Observable<firebase.User | null> => this.fireauth.user;
 
-  loginWithGithub = (next?: () => void): void => {
-    const githubAuthProvider = new firebase.auth.GithubAuthProvider();
-    githubAuthProvider.addScope("profile");
-    this.login(githubAuthProvider, next);
-  }
+  loginWithGithub = (next?: () => void): void => this.login(new firebase.auth.GithubAuthProvider(), next);
 
-  loginWithGoogle = (next?: () => void): void => {
-    const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-    googleAuthProvider.addScope("profile");
-    this.login(googleAuthProvider, next);
-  }
+  loginWithGoogle = (next?: () => void): void => this.login(new firebase.auth.GoogleAuthProvider(), next);
 
   logout = (): void => {
     this.fireauth.signOut();
@@ -57,3 +49,4 @@ export class AuthService {
     });
   };
 }
+

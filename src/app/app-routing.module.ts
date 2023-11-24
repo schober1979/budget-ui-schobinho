@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { categoriesPath, defaultPath, expensesPath } from './shared/routes';
-import {AuthGuard} from "@angular/fire/auth-guard";
+import {categoriesPath, defaultPath, expensesPath, loginPath} from './shared/routes';
+import {AuthGuard} from "./shared/guard/auth.guard";
 import {LoginComponent} from "./shared/login/login.component";
 
 const routes: Routes = [

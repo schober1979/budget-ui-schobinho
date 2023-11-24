@@ -12,33 +12,31 @@ import {FormBuilder, FormGroup} from "@angular/forms";
   templateUrl: './category-list.component.html',
 })
 export class CategoryListComponent {
+
   categories: Category[] | null = null;
+  loading = false;
+
   readonly initialSort = 'name,asc';
   lastPageReached = false;
-  loading = false;
   searchCriteria: CategoryCriteria = { page: 0, size: 25, sort: this.initialSort };
+  ionViewDidEnter(): void {
+    this.loadCategories();
+  }
 
   ionViewDidLeave(): void {
     this.searchFormSubscription.unsubscribe();
   }
 
-  ionViewDidEnter(): void {
-    this.loadCategories();
-  }
   loadNextCategoryPage($event: any) {
     this.searchCriteria.page++;
     this.loadCategories(() => ($event as InfiniteScrollCustomEvent).target.complete());
   }
+
   reloadCategories($event?: any): void {
     this.searchCriteria.page = 0;
     this.loadCategories(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
   }
-  async openModal(category?: Category): Promise<void> {
-    const modal = await this.modalCtrl.create({ component: CategoryModalComponent });
-    modal.present();
-    const { role } = await modal.onWillDismiss();
-    if (role === 'refresh') this.reloadCategories();
-  }
+
   readonly searchForm: FormGroup;
   readonly sortOptions: SortOption[] = [
     { label: 'Created at (newest first)', value: 'createdAt,desc' },
@@ -47,21 +45,19 @@ export class CategoryListComponent {
     { label: 'Name (Z-A)', value: 'name,desc' },
   ];
   private readonly searchFormSubscription: Subscription;
-
   constructor(
     private readonly modalCtrl: ModalController,
     private readonly categoryService: CategoryService,
     private readonly toastService: ToastService,
     private readonly formBuilder: FormBuilder)
-{this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
-  this.searchFormSubscription = this.searchForm.valueChanges
-    .pipe(debounce((value) => interval(value.name?.length ? 400 : 0)))
+  {this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
+    this.searchFormSubscription = this.searchForm.valueChanges
+    .pipe(debounce((value) => interval(value.name?.length ? 1500 : 0)))
     .subscribe((value) => {
       this.searchCriteria = { ...this.searchCriteria, ...value, page: 0 };
       this.loadCategories();
     });
 }
-
   private loadCategories(next: () => void = () => {}): void {
     if (!this.searchCriteria.name) delete this.searchCriteria.name;
     this.loading = true;
@@ -82,7 +78,6 @@ export class CategoryListComponent {
         error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
       });
   }
-
   async openModal(category?: Category): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: CategoryModalComponent,

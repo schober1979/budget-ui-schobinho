@@ -12,26 +12,28 @@ import {Category} from "../../shared/domain";
   templateUrl: './category-modal.component.html',
 })
 export class CategoryModalComponent {
+
   readonly categoryForm: FormGroup;
   submitting = false;
 
+  // Passed into the component by the ModalController, available in the ionViewWillEnter
   category: Category = {} as Category;
+
   constructor(
     private readonly actionSheetService: ActionSheetService,
-    private readonly modalCtrl: ModalController,
     private readonly categoryService: CategoryService,
     private readonly formBuilder: FormBuilder,
+    private readonly modalCtrl: ModalController,
     private readonly toastService: ToastService
-
   ) {
-    this.categoryForm = this.formBuilder.group({id: [], name: ['', [Validators.required, Validators.maxLength(40)]],
+    this.categoryForm = this.formBuilder.group({
+      id: [], //hidden
+      name: ['', [Validators.required, Validators.maxLength(40)]],
     });
   }
-
   cancel(): void {
     this.modalCtrl.dismiss(null, 'cancel');
   }
-
   save(): void {
     this.submitting = true;
     this.categoryService
@@ -43,9 +45,8 @@ export class CategoryModalComponent {
           this.modalCtrl.dismiss(null, 'refresh');
         },
         error: (error) => this.toastService.displayErrorToast('Could not save category', error),
-      });
+      })
   }
-
   delete(): void {
     from(this.actionSheetService.showDeletionConfirmation('Are you sure you want to delete this category?'))
       .pipe(
@@ -53,7 +54,7 @@ export class CategoryModalComponent {
         tap(() => (this.submitting = true)),
         mergeMap(() => this.categoryService.deleteCategory(this.category.id!)),
         finalize(() => (this.submitting = false)),
-      )
+        )
       .subscribe({
         next: () => {
           this.toastService.displaySuccessToast('Category deleted');
@@ -61,8 +62,7 @@ export class CategoryModalComponent {
         },
         error: (error) => this.toastService.displayErrorToast('Could not delete category', error),
       });
-  }
-  ionViewWillEnter(): void {
+  }  ionViewWillEnter(): void {
     this.categoryForm.patchValue(this.category);
   }
 }
