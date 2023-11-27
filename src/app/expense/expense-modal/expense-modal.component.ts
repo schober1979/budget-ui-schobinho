@@ -9,9 +9,13 @@ import { ActionSheetService } from '../../shared/service/action-sheet.service';
   templateUrl: './expense-modal.component.html',
 })
 export class ExpenseModalComponent {
+  categories: Category[] = [];
+
+
   constructor(
     private readonly actionSheetService: ActionSheetService,
     private readonly modalCtrl: ModalController,
+
   ) {}
 
   cancel(): void {
@@ -20,6 +24,11 @@ export class ExpenseModalComponent {
 
   save(): void {
     this.modalCtrl.dismiss(null, 'save');
+    this.expenseService
+      .upsertExpense({
+        ...this.expenseForm.value,
+        date: formatISO(parseISO(this.expenseForm.value.date), { representation: 'date' }),
+      });
   }
 
   delete(): void {
@@ -27,11 +36,20 @@ export class ExpenseModalComponent {
       .pipe(filter((action) => action === 'delete'))
       .subscribe(() => this.modalCtrl.dismiss(null, 'delete'));
   }
+  private loadAllCategories(): void {
+    this.categoryService.getAllCategories({ sort: 'name,asc' }).subscribe({
+      next: (categories) => (this.categories = categories),
+      error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
+    });
+  }
 
   async showCategoryModal(): Promise<void> {
     const categoryModal = await this.modalCtrl.create({ component: CategoryModalComponent });
     categoryModal.present();
     const { role } = await categoryModal.onWillDismiss();
     console.log('role', role);
+  }
+  ionViewWillEnter(): void {
+    this.loadAllCategories();
   }
 }

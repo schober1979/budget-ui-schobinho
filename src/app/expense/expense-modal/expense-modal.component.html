@@ -26,7 +26,7 @@ Expense Modal
   <ion-item>
     <ion-icon name="pricetag" slot="start"></ion-icon>
     <ion-select interface="popover" placeholder="Choose a category">
-      <ion-select-option>Das ist ein Test</ion-select-option>
+      <ion-select-option *ngFor="let category of categories" [value]="category.id">{{category.name}}</ion-select-option>
     </ion-select>
     <ion-button slot="end" (click)="showCategoryModal()">
       <ion-icon slot="icon-only" name="add"></ion-icon>
