@@ -8,7 +8,7 @@ import {save} from "ionicons/icons";
 import {CategoryService} from "../../category/category.service";
 import {ExpenseService} from "../expense.service";
 import {formatISO, parseISO } from 'date-fns';
-import {Category} from "../../shared/domain";
+import {Category, CategoryCriteria} from "../../shared/domain";
 import {ToastService} from "../../shared/service/toast.service";
 
 @Component({
@@ -71,7 +71,7 @@ export class ExpenseModalComponent {
   }
 
   save(): void {
-    this.modalCtrl.dismiss(null, 'save');
+    this.submitting = true;
     this.expenseService
       .upsertExpense({
         ...this.expenseForm.value,

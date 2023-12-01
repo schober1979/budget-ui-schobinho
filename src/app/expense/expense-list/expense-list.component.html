@@ -46,9 +46,18 @@ Expense List
 <!-- Expenses list -->
 <ion-list inset="true">
   <!-- Expenses -->
-  <ion-item button="true" [detail]="true" (click)="openModal()">
-    <ion-label>TESTING!!</ion-label>
-  </ion-item>
+  <ion-item-group *ngFor="let expenseGroup of expenseGroups">
+    <ion-item-divider>
+      <ion-label>
+        {{ expenseGroup.date | date:'mediumDate' }}
+      </ion-label>
+    </ion-item-divider>
+    <ion-item *ngFor="let expense of expenseGroup.expenses" button="true" [detail]="true" (click)="openModal(expense)">
+      <ion-label>
+        {{ expense.name }} - {{ expense.amount | currency }}
+      </ion-label>
+    </ion-item>
+  </ion-item-group>
 </ion-list>
 <!-- Create fab button -->
 <ion-fab slot="fixed" vertical="bottom" horizontal="end">
