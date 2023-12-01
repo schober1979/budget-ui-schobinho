@@ -3,6 +3,12 @@ import { ModalController } from '@ionic/angular';
 import { filter, from } from 'rxjs';
 import { CategoryModalComponent } from '../../category/category-modal/category-modal.component';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {save} from "ionicons/icons";
+import {CategoryService} from "../../category/category.service";
+import {ExpenseService} from "../expense.service";
+import {formatISO, parseISO } from 'date-fns';
+
 
 @Component({
   selector: 'app-expense-modal',
@@ -10,14 +16,26 @@ import { ActionSheetService } from '../../shared/service/action-sheet.service';
 })
 export class ExpenseModalComponent {
   categories: Category[] = [];
+  readonly expenseForm: FormGroup;
+  submitting = false;
 
 
   constructor(
+    private readonly expenseService: ExpenseService,
+    private readonly categoryService: CategoryService,
     private readonly actionSheetService: ActionSheetService,
     private readonly modalCtrl: ModalController,
-
-  ) {}
-
+    private readonly formBuilder: FormBuilder,
+    private readonly toastService: ToastService,
+) {
+  this.expenseForm = this.formBuilder.group({
+    id: [],
+    amount:[],
+    categoryId:[],
+    date:[],
+    name: ['', [Validators.required, Validators.maxLength(40)]],
+  });
+}
   cancel(): void {
     this.modalCtrl.dismiss(null, 'cancel');
   }
