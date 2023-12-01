@@ -8,7 +8,8 @@ import {save} from "ionicons/icons";
 import {CategoryService} from "../../category/category.service";
 import {ExpenseService} from "../expense.service";
 import {formatISO, parseISO } from 'date-fns';
-
+import {Category} from "../../shared/domain";
+import {ToastService} from "../../shared/service/toast.service";
 
 @Component({
   selector: 'app-expense-modal',
