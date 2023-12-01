@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { filter, from } from 'rxjs';
+import {ModalController, RefresherCustomEvent} from '@ionic/angular';
+import {filter, finalize, from} from 'rxjs';
 import { CategoryModalComponent } from '../../category/category-modal/category-modal.component';
 import { ActionSheetService } from '../../shared/service/action-sheet.service';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
