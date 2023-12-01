@@ -19,6 +19,14 @@ export class ExpenseModalComponent {
   categories: Category[] = [];
   readonly expenseForm: FormGroup;
   submitting = false;
+  readonly initialSort = 'name,asc';
+  lastPageReached = false;
+  loading = false;
+  searchCriteria: CategoryCriteria = { page: 0, size: 25, sort: this.initialSort };
+  reloadCategories($event?: any): void {
+    this.searchCriteria.page = 0;
+    this.loadCategories(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
+  }
 
 
   constructor(
@@ -37,6 +45,27 @@ export class ExpenseModalComponent {
     name: ['', [Validators.required, Validators.maxLength(40)]],
   });
 }
+
+  private loadCategories(next: () => void = () => {}): void {
+    if (!this.searchCriteria.name) delete this.searchCriteria.name;
+    this.loading = true;
+    this.categoryService
+      .getCategories(this.searchCriteria)
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+          next();
+        }),
+      )
+      .subscribe({
+        next: (categories) => {
+          if (this.searchCriteria.page === 0 || !this.categories) this.categories = [];
+          this.categories.push(...categories.content);
+          this.lastPageReached = categories.last;
+        },
+        error: (error) => this.toastService.displayErrorToast('Could not load categories', error),
+      });
+  }
   cancel(): void {
     this.modalCtrl.dismiss(null, 'cancel');
   }
