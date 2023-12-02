@@ -21,13 +21,15 @@ export class ExpenseService {
 
   // Suchen
 
-  getExpenses = (pagingCriteria: ExpenseCriteria): Observable<Page<Expense>> =>
+  getExpenses = (pagingCriteria: PagingCriteria): Observable<Page<Expense>> =>
     this.httpClient.get<Page<Expense>>(this.apiUrl, { params: new HttpParams({ fromObject: { ...pagingCriteria } }) });
 
+  getAllExpenses = (sortCriteria: PagingCriteria): Observable<Expense[]> =>
+    this.httpClient.get<Expense[]>(this.apiUrl, { params: new HttpParams({ fromObject: { ...sortCriteria } }) });
 
   // Erstellen & Bearbeiten
 
-  upsertExpense = (expense: Expense): Observable<void> => this.httpClient.put<void>(this.apiUrl, expense);
+  upsertExpense = (expense: ExpenseUpsertDto): Observable<void> => this.httpClient.put<void>(this.apiUrl, expense);
 
   // Löschen
 

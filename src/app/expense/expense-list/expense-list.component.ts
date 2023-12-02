@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { addMonths, set } from 'date-fns';
-import { ModalController } from '@ionic/angular';
+import { ModalController, RefresherCustomEvent } from '@ionic/angular';
 import { ExpenseModalComponent } from '../expense-modal/expense-modal.component';
 import {Category, CategoryCriteria, Expense, ExpenseCriteria} from '../../shared/domain';
 import {formatPeriod} from "../../shared/period";
@@ -100,4 +100,9 @@ export class ExpenseListComponent {
     const { role } = await modal.onWillDismiss();
     console.log('role', role);
   }
+
+reloadExpenses($event?: any): void {
+  this.searchCriteria.page = 0;
+  this.loadExpenses(() => ($event ? ($event as RefresherCustomEvent).target.complete() : {}));
+}
 }
