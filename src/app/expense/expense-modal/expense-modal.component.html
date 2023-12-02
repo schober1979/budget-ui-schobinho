@@ -10,7 +10,7 @@ Expense Modal
     </ion-buttons>
     <ion-title>Add Expense</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="save()">
+      <ion-button (click)="save()" [disabled]="expenseForm.pristine || expenseForm.invalid || submitting">
         <ion-icon slot="start" name="save"></ion-icon>
         SAVE
       </ion-button>

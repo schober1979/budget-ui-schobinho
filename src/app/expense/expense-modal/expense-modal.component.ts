@@ -72,10 +72,20 @@ export class ExpenseModalComponent {
 
   save(): void {
     this.submitting = true;
+    const expenseData = {
+      ...this.expenseForm.value, // Kopiert alle Werte aus expenseForm.value
+      date: formatISO(parseISO(this.expenseForm.value.date), { representation: 'date' }),
+    };
+
     this.expenseService
-      .upsertExpense({
-        ...this.expenseForm.value,
-        date: formatISO(parseISO(this.expenseForm.value.date), { representation: 'date' }),
+      .upsertExpense(expenseData)
+      .pipe(finalize(() => (this.submitting = false)))
+      .subscribe({
+        next: () => {
+          this.toastService.displaySuccessToast('Expense saved');
+          this.modalCtrl.dismiss(null, 'refresh');
+        },
+        error: (error) => this.toastService.displayErrorToast('Could not save expense', error),
       });
   }
 
