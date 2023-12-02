@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {ModalController, RefresherCustomEvent} from '@ionic/angular';
 import {filter, finalize, from} from 'rxjs';
 import { CategoryModalComponent } from '../../category/category-modal/category-modal.component';

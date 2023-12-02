@@ -39,7 +39,7 @@ export class ExpenseListComponent {
     private readonly toastService: ToastService,
     private readonly expenseService: ExpenseService,
     private readonly formBuilder: FormBuilder)
-  {this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort] });
+  {this.searchForm = this.formBuilder.group({ name: [], sort: [this.initialSort], categoryIds: [] });
     this.searchFormSubscription = this.searchForm.valueChanges
       .pipe(debounce((value) => interval(value.name?.length ? 1500 : 0)))
       .subscribe((value) => {

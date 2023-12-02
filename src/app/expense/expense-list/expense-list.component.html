@@ -30,8 +30,8 @@ Expense List
     <ion-col size="10" size-sm="4">
       <ion-item>
         <ion-icon name="pricetag" slot="start"></ion-icon>
-        <ion-select interface="popover" placeholder="Category"[multiple]="true">
-          <ion-select-option>DAS IST EIN TEST</ion-select-option>
+        <ion-select interface="popover" placeholder="Category"[multiple]="true" formControlName="categoryIds">
+          <ion-select-option role="option">DAS IST EIN TEST</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-col>
